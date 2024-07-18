@@ -45,6 +45,7 @@ class ReplacementManager:
         self.tree.heading("Key", text="Key")
         self.tree.heading("Value", text="Value")
         self.tree.grid(row=0, column=0, columnspan=4)
+        self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
         self.add_key_label = tk.Label(root, text="Key:")
         self.add_key_label.grid(row=1, column=0, sticky=tk.W)
@@ -120,6 +121,15 @@ class ReplacementManager:
         self.replacements = self.load_replacements()
         for key, value in self.replacements.items():
             self.tree.insert("", "end", values=(key, value))
+
+    def on_tree_select(self, event):
+        selected_item = self.tree.selection()
+        if selected_item:
+            key, value = self.tree.item(selected_item)["values"]
+            self.add_key_entry.delete(0, tk.END)
+            self.add_value_entry.delete(0, tk.END)
+            self.add_key_entry.insert(0, key)
+            self.add_value_entry.insert(0, value)
 
     def select_template(self):
         self.ppt_template_path = filedialog.askopenfilename(
